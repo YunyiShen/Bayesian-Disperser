@@ -5,14 +5,23 @@
 using namespace Rcpp;
 using namespace arma;
 
+arma::vec WF_prob(const population & popu, double rate){
+    arma::uvec survivor = popu.survive_migrator(rate);
+    arma::vec prob(popu.size,fill::zeros);
+    prob(survivor) = exp(popu.environment(survivor)-mean(popu.environment(survivor)))/
+        sum(exp(popu.environment(survivor)-mean(popu.environment(survivor))));
+    return(prob);
+}
+
 // we assume a Wright-Fisher type drift and selection, sample gene with multinomial probability
 //  with fitness_i = logit(p_i)
 void WrightFisher_selection(population &popu, const double &cost)
 {
-    arma::vec fitness = popu.get_fitness(cost);
-    fitness -= mean(fitness); // logit is translation invariant 
+    //arma::vec fitness = popu.get_fitness(cost);
+    //fitness -= mean(fitness); // logit is translation invariant 
     
-    arma::vec prob = exp(fitness) / (sum(exp(fitness)));
+    //arma::vec prob = exp(fitness) / (sum(exp(fitness)));
+    arma:vec prob = WF_prob(popu, cost);
     arma::ivec res(popu.size);
     
     rmultinom(popu.size, prob.begin(), popu.size, res.begin());
@@ -119,3 +128,5 @@ void save_summary_stats(const population &popu,
     phenotype_sd(i,3) = stddev(popu.phenotype_beta);
     return;
 }
+
+

@@ -20,7 +20,7 @@ Rcpp::List Wright_Fisher_simulation(const int &n,                 // population 
                                     const double &a_env_sp,       // noise level on landscape
                                     const double &a_env_temp,     // noise level on time
                                     const double &trend_env_temp, // temporal trend of the env
-                                    const double &cost,           // cost for dispersion
+                                    const double &rate,           // death rate for dispersion
                                     bool progress                 // progress bar?
 )
 {
@@ -61,20 +61,20 @@ Rcpp::List Wright_Fisher_simulation(const int &n,                 // population 
         {
             
             
-            //Rcout << "settled" << popu.settled << (int)(as_scalar(sum(popu.settled))) << endl;
+            
             if(as_scalar(sum(popu.settled)) > (popu.size-1)){ 
                 
                 break;
             }
             
             disperse_onestep(popu, 0, a_env_sp);
-            //Rcout << "flag2" << endl;
+            
             
         }
         
         dist_move(i) = mean(popu.steps_moved);
         // selection
-        WrightFisher_selection(popu, cost);
+        WrightFisher_selection(popu, rate);
         
         // mutate
         popu.AR1_mutation(mutation);

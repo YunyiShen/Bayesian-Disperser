@@ -27,6 +27,7 @@ public:
     void AR1_mutation(arma::vec);
     void AR1_nextyear(double, double);
     void check_settlement();
+    arma::uvec survive_migrator(double) const; // this give which died on the way
 };
 
 //random constructer
@@ -57,9 +58,10 @@ inline arma::vec population::get_fitness(double cost) const
     return (environment - cost * steps_moved);
 }
 
+
 inline void population::check_settlement()
 {
-    arma::uvec settled_ind = find(environment > (phenotype_mu + genotype_thr / (phenotype_hat_tau)));
+    arma::uvec settled_ind = find(environment > (phenotype_mu + genotype_thr / sqrt(phenotype_hat_tau)));
     //std::cout << settled_ind << endl;
     settled(settled_ind) *= 0;
     settled(settled_ind) += 1;
@@ -109,6 +111,16 @@ inline void population::AR1_nextyear(double a, double trend)
 {
     normal_AR1_regress(environment, a, trend);
     return;
+}
+
+// which migrator survived
+inline arma::uvec population::survive_migrator(double rate) const{
+    rate = rate>=1 ? 1 : rate;
+    arma::vec survival_rate(size);
+    for(int i = 0 ; i<steps_moved.n_elem;++i){
+        survival_rate(i) = log(1-rate) * steps_moved(i);
+    }
+    return(find(survival_rate >= log(randu(size))));
 }
 
 #endif
