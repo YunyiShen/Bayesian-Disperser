@@ -89,33 +89,33 @@ void population::AR1_nextyear(double a,double trend){
 
 // we assume a Wright-Fisher type drift and selection, sample gene with multinomial probability 
 //  with fitness_i = logit(p_i)
-void WrightFisher_selection(population & pop,const double & cost){
-    arma::vec fitness = pop.get_fitness(cost);
+void WrightFisher_selection(population & popu,const double & cost){
+    arma::vec fitness = popu.get_fitness(cost);
     arma::vec prob = exp(fitness)/(sum(exp(fitness)));
-    arma::ivec res(pop.size);
-    rmultinom(pop.size,prob.begin(),pop.size,res.begin());
+    arma::ivec res(popu.size);
+    rmultinom(popu.size,prob.begin(),popu.size,res.begin());
     arma::uvec surv(size(res));
-    for(int i = 0; i<pop.size; ++i){
+    for(int i = 0; i<popu.size; ++i){
         surv(i) = static_cast<unsigned int>(res(i)); // we need unsigned integer
     }
 
-    pop.alpha = pop.alpha(surv);
-    pop.environment = pop.environment(surv);
-    pop.genotype_beta = pop.genotype_beta(surv);
-    pop.genotype_alpha = pop.genotype_alpha(surv);
-    pop.genotype_mu = pop.genotype_mu(surv);
-    pop.genotype_nu = pop.genotype_nu(surv);
+    popu.alpha = popu.alpha(surv);
+    popu.environment = popu.environment(surv);
+    popu.genotype_beta = popu.genotype_beta(surv);
+    popu.genotype_alpha = popu.genotype_alpha(surv);
+    popu.genotype_mu = popu.genotype_mu(surv);
+    popu.genotype_nu = popu.genotype_nu(surv);
 
-    pop.phenotype_alpha = pop.genotype_alpha;
-    pop.phenotype_beta = pop.genotype_beta;
-    pop.phenotype_mu = pop.genotype_mu;
-    pop.phenotype_nu = pop.genotype_nu;
+    popu.phenotype_alpha = popu.genotype_alpha;
+    popu.phenotype_beta = popu.genotype_beta;
+    popu.phenotype_mu = popu.genotype_mu;
+    popu.phenotype_nu = popu.genotype_nu;
 
 
-    pop.phenotype_hat_mu = pop.genotype_mu;
-    pop.phenotype_hat_tau = pop.genotype_beta % (1/pop.genotype_alpha);
-    pop.steps_moved *= 0;
-    pop.settled *= 0;
+    popu.phenotype_hat_mu = popu.genotype_mu;
+    popu.phenotype_hat_tau = popu.genotype_beta % (1/popu.genotype_alpha);
+    popu.steps_moved *= 0;
+    popu.settled *= 0;
 
 
     return;
@@ -123,29 +123,29 @@ void WrightFisher_selection(population & pop,const double & cost){
 
 // one step move function
 
-void disperse_onestep(population & pop,
+void disperse_onestep(population & popu,
                 const double & trend,
                 double a){
-    arma::uvec unsettled = find(pop.settled == 0); // only move those not yet settled down
-    pop.steps_moved(unsettled) += 1; // move one step
+    arma::uvec unsettled = find(popu.settled == 0); // only move those not yet settled down
+    popu.steps_moved(unsettled) += 1; // move one step
     // to a new environment
-    pop.environment(unsettled) += (a * randn(size(pop.environment(unsettled))) + trend);
+    popu.environment(unsettled) += (a * randn(size(popu.environment(unsettled))) + trend);
     // get new knowledge:
     
-    pop.phenotype_alpha(unsettled) += 0.5;
-    pop.phenotype_beta(unsettled) += pop.phenotype_nu(unsettled) % 
-        (1/(pop.phenotype_nu(unsettled) + 1)) % pow(pop.phenotype_mu(unsettled) - pop.environment(unsettled),2)/2;
+    popu.phenotype_alpha(unsettled) += 0.5;
+    popu.phenotype_beta(unsettled) += popu.phenotype_nu(unsettled) % 
+        (1/(popu.phenotype_nu(unsettled) + 1)) % pow(popu.phenotype_mu(unsettled) - popu.environment(unsettled),2)/2;
 
-    pop.phenotype_mu(unsettled) = (pop.phenotype_mu(unsettled) % pop.phenotype_nu(unsettled) + pop.environment(unsettled)) % 
-        (1/(pop.phenotype_nu(unsettled) + 1));
-    pop.phenotype_nu = pop.phenotype_nu(unsettled) + 1; 
+    popu.phenotype_mu(unsettled) = (popu.phenotype_mu(unsettled) % popu.phenotype_nu(unsettled) + popu.environment(unsettled)) % 
+        (1/(popu.phenotype_nu(unsettled) + 1));
+    popu.phenotype_nu = popu.phenotype_nu(unsettled) + 1; 
 
     // make decisions:
-    pop.phenotype_hat_mu(unsettled) = pop.genotype_mu(unsettled);
-    pop.phenotype_hat_tau(unsettled) = pop.genotype_beta(unsettled) % (1/pop.genotype_alpha(unsettled)); 
+    popu.phenotype_hat_mu(unsettled) = popu.genotype_mu(unsettled);
+    popu.phenotype_hat_tau(unsettled) = popu.genotype_beta(unsettled) % (1/popu.genotype_alpha(unsettled)); 
 
     
-    pop.check_settlement();
+    popu.check_settlement();
 
     return;
 }
