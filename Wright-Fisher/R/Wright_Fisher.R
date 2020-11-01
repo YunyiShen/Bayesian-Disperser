@@ -9,7 +9,7 @@ sourceCpp("./src/Wright-Fisher-simu.cpp")
 
 test <- Wright_Fisher_simulation(n=1000, max_step = 100,
 #         // max number of steps per year
-                                 n_iter = 5000,
+                                 n_iter = 1000,
                                  #      // number of years to evolute
                                  mutation = matrix(0.1,5,1),
                                  #// noise level for mutation, for mu, nv, alpha, beta and thr

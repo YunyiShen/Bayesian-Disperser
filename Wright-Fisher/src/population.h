@@ -46,7 +46,7 @@ inline population::population(int n)
 
     phenotype_hat_mu = genotype_mu;
     phenotype_hat_tau = genotype_beta % (1 / genotype_alpha);
-    genotype_thr = log(arma::randu<vec>(n));
+    genotype_thr = -log(arma::randu<vec>(n));
     steps_moved = zeros<ivec>(n);
     settled = zeros<ivec>(n);
 }
