@@ -35,6 +35,13 @@ class population {
         population(int);
         arma::vec get_fitness (double) const;
         void AR1_mutation(double);
+        void AR1_nextyear(double,double); 
+        void check_settlement(){
+            arma::uvec settled = find(environment > phenotype_mu + alpha / (phenotype_hat_tau));
+            settled(settled) *= 0;
+            settled(settled) += 1;
+            return;
+        }
 };
 
 // random construct
@@ -73,6 +80,12 @@ void population::AR1_mutation(double a){
     return;
 }
 
+
+// next year's environment
+void population::AR1_nextyear(double a,double trend){
+    normal_AR1(environment, a, trend);
+    return;
+}
 
 // we assume a Wright-Fisher type drift and selection, sample gene with multinomial probability 
 //  with fitness_i = logit(p_i)
@@ -132,9 +145,7 @@ void disperse_onestep(population & pop,
     pop.phenotype_hat_tau(unsettled) = pop.genotype_beta(unsettled) % (1/pop.genotype_alpha(unsettled)); 
 
     
-    arma::uvec settled = find(pop.environment > pop.phenotype_mu + pop.alpha / (pop.phenotype_hat_tau));
-    pop.settled(settled) *= 0;
-    pop.settled(settled) += 1;
+    pop.check_settlement();
 
     return;
 }
