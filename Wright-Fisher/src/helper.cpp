@@ -45,6 +45,8 @@ void WrightFisher_selection(population &popu, const double &cost)
 
     popu.phenotype_hat_mu = popu.genotype_mu;
     popu.phenotype_hat_tau = popu.genotype_beta % (1 / popu.genotype_alpha);
+
+    // reset movement parameters
     popu.steps_moved *= 0;
     popu.settled *= 0;
 
@@ -66,7 +68,7 @@ void disperse_onestep(population &popu,
     // to a new environment
     
     popu.environment(unsettled) = a * popu.environment(unsettled) + ((1-a) * randn(size(popu.environment(unsettled))) + trend);
-    // get new knowledge:
+    // get new knowledge, knowledge updating rule was based on normal-gamma conjugate prior of normal, see https://en.wikipedia.org/wiki/Normal-gamma_distribution
     
     
     popu.phenotype_alpha(unsettled) += 0.5;
