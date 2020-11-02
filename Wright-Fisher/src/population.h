@@ -18,7 +18,7 @@ public:
     arma::vec genotype_mu, genotype_nu, genotype_alpha, genotype_beta; // genotypes, with prior mean mu, number of effective samples k and precision beta
     arma::vec phenotype_mu, phenotype_nu, phenotype_alpha, phenotype_beta;
     arma::vec phenotype_hat_mu, phenotype_hat_tau; // phenotype of mu and precision tau, point estimations
-    arma::vec genotype_thr;                               // how many standard deviations to settle?
+    arma::vec genotype_thr;                        // how many standard deviations to settle?
     arma::ivec steps_moved;                        // how may steps moved since this year
     arma::ivec settled;                            // whether settled
     // methods
@@ -46,7 +46,7 @@ inline population::population(int n)
     phenotype_nu = genotype_nu;
 
     phenotype_hat_mu = genotype_mu;
-    phenotype_hat_tau = genotype_beta % (1 / genotype_alpha);
+    phenotype_hat_tau = genotype_alpha % (1 / genotype_beta);
     genotype_thr = -log(arma::randu<vec>(n));
     steps_moved = zeros<ivec>(n);
     settled = zeros<ivec>(n);
@@ -58,10 +58,10 @@ inline arma::vec population::get_fitness(double cost) const
     return (environment - cost * steps_moved);
 }
 
-
+// see which settled based on their standard
 inline void population::check_settlement()
 {
-    arma::uvec settled_ind = find(environment > (phenotype_mu + genotype_thr / sqrt(phenotype_hat_tau)));
+    arma::uvec settled_ind = find(environment > (phenotype_hat_mu + genotype_thr / sqrt(phenotype_hat_tau)));
     //std::cout << settled_ind << endl;
     settled(settled_ind) *= 0;
     settled(settled_ind) += 1;
@@ -71,25 +71,25 @@ inline void population::check_settlement()
 // stationary AR1 random walk for a normal r.v., will be used for dispersion, next year and mutation
 // x_{t+1} = x_t + a epsilon
 inline void normal_AR1(arma::mat &input,
-                const double &trend,
-                double a)
+                       const double &trend,
+                       double a)
 {
     input += (a * randn(size(input)) + trend);
     return;
 }
 
 inline void normal_AR1_regress(arma::mat &input,
-                const double &trend,
-                double a)
+                               const double &trend,
+                               double a)
 {
-    a = a < 1 ? a:1;
-    input = a * input + ((1-a) * randn(size(input)) + trend);
+    a = a < 1 ? a : 1;
+    input = a * input + ((1 - a) * randn(size(input)) + trend);
     return;
 }
 
 inline void lognormal_AR1(arma::mat &input,
-                   const double &trend,
-                   double a)
+                          const double &trend,
+                          double a)
 {
     input = exp(log(input) + a * randn(size(input)) + trend);
     return;
@@ -114,13 +114,15 @@ inline void population::AR1_nextyear(double a, double trend)
 }
 
 // which migrator survived
-inline arma::uvec population::survive_migrator(double rate) const{
-    rate = rate>=1 ? 1 : rate;
+inline arma::uvec population::survive_migrator(double rate) const
+{
+    rate = rate >= 1 ? 1 : rate;
     arma::vec survival_rate(size);
-    for(int i = 0 ; i<steps_moved.n_elem;++i){
-        survival_rate(i) = log(1-rate) * steps_moved(i);
+    for (int i = 0; i < steps_moved.n_elem; ++i)
+    {
+        survival_rate(i) = log(1 - rate) * steps_moved(i);
     }
-    return(find(survival_rate >= log(randu(size))));
+    return (find(survival_rate >= log(randu(size))));
 }
 
 #endif

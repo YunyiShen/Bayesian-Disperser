@@ -53,7 +53,7 @@ Rcpp::List Wright_Fisher_simulation(const int &n,                 // population 
                     Rcpp::Named("mean_moved") = dist_move));
         }
         // save summary statistics
-        save_summary_stats(popu, i, genotype_mean, phenotype_mean, genotype_sd, phenotype_sd);
+        save_summary_stats_genotype(popu, i, genotype_mean, genotype_sd);
         // see if settled
         popu.check_settlement();
         // move
@@ -73,6 +73,8 @@ Rcpp::List Wright_Fisher_simulation(const int &n,                 // population 
         }
         
         dist_move(i) = mean(popu.steps_moved);
+        // store phenotype
+        save_summary_stats_phenotype(popu, i, phenotype_mean, phenotype_sd);
         // selection
         WrightFisher_selection(popu, rate);
         

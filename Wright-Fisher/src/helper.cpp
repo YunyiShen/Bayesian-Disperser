@@ -53,7 +53,7 @@ void WrightFisher_selection(population &popu, const double &cost)
     popu.phenotype_nu = popu.genotype_nu;
 
     popu.phenotype_hat_mu = popu.genotype_mu;
-    popu.phenotype_hat_tau = popu.genotype_beta % (1 / popu.genotype_alpha);
+    popu.phenotype_hat_tau = popu.genotype_alpha % (1 / popu.genotype_beta);
 
     // reset movement parameters
     popu.steps_moved *= 0;
@@ -86,24 +86,24 @@ void disperse_onestep(population &popu,
 
     popu.phenotype_mu(unsettled) = (popu.phenotype_mu(unsettled) % popu.phenotype_nu(unsettled) + popu.environment(unsettled)) %
                                    (1 / (popu.phenotype_nu(unsettled) + 1));
-    popu.phenotype_nu(unsettled) = popu.phenotype_nu(unsettled) + 1;
+    popu.phenotype_nu(unsettled) += 1;
     
     // make decisions:
     
-    popu.phenotype_hat_mu(unsettled) = popu.genotype_mu(unsettled);
-    popu.phenotype_hat_tau(unsettled) = popu.genotype_beta(unsettled) % (1 / popu.genotype_alpha(unsettled));
+    popu.phenotype_hat_mu(unsettled) = popu.phenotype_mu(unsettled);
+    popu.phenotype_hat_tau(unsettled) = popu.phenotype_alpha(unsettled) % (1 / popu.phenotype_beta(unsettled));
     
     popu.check_settlement();
     
     return;
 }
 
-void save_summary_stats(const population &popu,
+void save_summary_stats_genotype(const population &popu,
                         int i, 
                         arma::mat &genotype_mean, 
-                        arma::mat &phenotype_mean, 
-                        arma::mat &genotype_sd, 
-                        arma::mat &phenotype_sd)
+                        
+                        arma::mat &genotype_sd
+                        )
 {
     genotype_mean(i,0) = mean(popu.genotype_mu);
     genotype_mean(i,1) = mean(popu.genotype_nu);
@@ -117,6 +117,16 @@ void save_summary_stats(const population &popu,
     genotype_sd(i,3) = stddev(popu.genotype_beta);
     genotype_sd(i,4) = stddev(popu.genotype_thr);
 
+    return;
+}
+
+
+void save_summary_stats_phenotype(const population &popu,
+                        int i, 
+                        arma::mat &phenotype_mean, 
+                        arma::mat &phenotype_sd)
+{
+    
     phenotype_mean(i,0) = mean(popu.phenotype_mu);
     phenotype_mean(i,1) = mean(popu.phenotype_nu);
     phenotype_mean(i,2) = mean(popu.phenotype_alpha);
@@ -128,5 +138,3 @@ void save_summary_stats(const population &popu,
     phenotype_sd(i,3) = stddev(popu.phenotype_beta);
     return;
 }
-
-

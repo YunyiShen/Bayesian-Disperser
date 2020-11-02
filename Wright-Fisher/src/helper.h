@@ -18,11 +18,16 @@ void disperse_onestep(population & popu,
                 const double & trend,
                 double a);
 
-void save_summary_stats(const population &popu,
+void save_summary_stats_phenotype(const population &popu,
+                        int i, 
+                        arma::mat &phenotype_mean, 
+                        arma::mat &phenotype_sd);
+
+void save_summary_stats_genotype(const population &popu,
                         int i, 
                         arma::mat &genotype_mean, 
-                        arma::mat &phenotype_mean, 
-                        arma::mat &genotype_sd, 
-                        arma::mat &phenotype_sd);
+                        
+                        arma::mat &genotype_sd
+                        );
 
 #endif
