@@ -61,7 +61,9 @@ inline arma::vec population::get_fitness(double cost) const
 // see which settled based on their standard
 inline void population::check_settlement()
 {
-    arma::uvec settled_ind = find(environment > (phenotype_hat_mu + genotype_thr / sqrt(phenotype_hat_tau)));
+    //std::cout << genotype_thr << endl;
+    //std::cout << phenotype_hat_tau << endl;
+    arma::uvec settled_ind = find(environment > (phenotype_hat_mu + genotype_thr /  sqrt(phenotype_hat_tau)));
     //std::cout << settled_ind << endl;
     settled(settled_ind) *= 0;
     settled(settled_ind) += 1;

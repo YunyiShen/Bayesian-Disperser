@@ -35,10 +35,10 @@ Rcpp::List Wright_Fisher_simulation(const int &n,                 // population 
     phenotype_sd += NA_REAL;
     arma::mat dist_move(n_iter, 1);
     dist_move += NA_REAL;
-
+    //Rcout << "flag1" <<endl;
     population popu(n);                // inital a population
     Progress prog((n_iter), progress); // progress bar
-
+    //Rcout << "flag2" <<endl;
     for (int i = 0; i < n_iter; ++i)
     {
         if (Progress::check_abort())
@@ -52,11 +52,14 @@ Rcpp::List Wright_Fisher_simulation(const int &n,                 // population 
                     Rcpp::Named("phenotype_sd") = phenotype_sd,
                     Rcpp::Named("mean_moved") = dist_move));
         }
+        
         // save summary statistics
         save_summary_stats_genotype(popu, i, genotype_mean, genotype_sd);
         // see if settled
         popu.check_settlement();
+        //Rcout << "flag3" <<endl;
         // move
+        
         for (int j = 0; j < max_step; ++j)
         {
             
@@ -66,12 +69,12 @@ Rcpp::List Wright_Fisher_simulation(const int &n,                 // population 
                 
                 break;
             }
-            
+            //Rcout << "flag4" <<endl;
             disperse_onestep(popu, 0, a_env_sp);
             
             
         }
-        
+        //Rcout << "flag5" <<endl;
         dist_move(i) = mean(popu.steps_moved);
         // store phenotype
         save_summary_stats_phenotype(popu, i, phenotype_mean, phenotype_sd);
