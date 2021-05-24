@@ -12,7 +12,7 @@ predictable_lowrisk <- Wright_Fisher_simulation(n=n, max_step = 1500,
 #         // max number of steps per year
                                  n_iter = n_iter,
                                  #      // number of years to evalute
-                                 mutation = c(2,0.1,0.1,0.1,0.1),
+                                 mutation = c(.1,0.1,0.1,0.1,0.1),
                                  #// noise level for mutation, for mu, nv, alpha, beta and thr
                                  a_env_sp = 0,
                                  # // noise level on landscape, env_i+1 = a env_i + (1-a) * epsilon
@@ -30,7 +30,7 @@ unpredictable_lowrisk <- Wright_Fisher_simulation(n=n, max_step = 1500,
 #         // max number of steps per year
                                  n_iter = n_iter,
                                  #      // number of years to evalute
-                                 mutation = c(2,0.1,0.1,0.1,0.1),
+                                 mutation = c(.1,0.1,0.1,0.1,0.1),
                                  #// noise level for mutation, for mu, nv, alpha, beta and thr
                                  a_env_sp = 0,
                                  # // noise level on landscape, env_i+1 = a env_i + (1-a) * epsilon
@@ -49,7 +49,7 @@ predictable_highrisk <- Wright_Fisher_simulation(n=n, max_step = 1500,
 #         // max number of steps per year
                                  n_iter = n_iter,
                                  #      // number of years to evalute
-                                 mutation = c(2,0.1,0.1,0.1,0.1),
+                                 mutation = c(.1,0.1,0.1,0.1,0.1),
                                  #// noise level for mutation, for mu, nv, alpha, beta and thr
                                  a_env_sp = 0,
                                  # // noise level on landscape, env_i+1 = a env_i + (1-a) * epsilon
@@ -67,7 +67,7 @@ unpredictable_highrisk <- Wright_Fisher_simulation(n=n, max_step = 1500,
 #         // max number of steps per year
                                  n_iter = n_iter,
                                  #      // number of years to evalute
-                                 mutation = c(2,0.1,0.1,0.1,0.1),
+                                 mutation = c(.1,0.1,0.1,0.1,0.1),
                                  #// noise level for mutation, for mu, nv, alpha, beta and thr
                                  a_env_sp = 0,
                                  # // noise level on landscape, env_i+1 = a env_i + (1-a) * epsilon
@@ -86,16 +86,17 @@ unpredictable_highrisk <- Wright_Fisher_simulation(n=n, max_step = 1500,
 par(mfrow = c(2,2))
 plot(predictable_lowrisk$genotype_mean[,1],
     xlab = "time", ylab = "Mean Prior mu",
-    ylim = c(-3,8),main = "predictable_lowrisk")
+    ylim = c(-3,3),
+    main = "predictable_lowrisk")
 plot(unpredictable_lowrisk$genotype_mean[,1],
     xlab = "time", ylab = "Mean Prior mu",
-    ylim = c(-3,8),main = "unpredictable_lowrisk")
+    ylim = c(-3,3),main = "unpredictable_lowrisk")
 plot(predictable_highrisk$genotype_mean[,1],
     xlab = "time", ylab = "Mean Prior mu",
-    ylim = c(-3,8),main = "predictable high risk")
+    ylim = c(-3,3),main = "predictable high risk")
 plot(unpredictable_highrisk$genotype_mean[,1],
     xlab = "time", ylab = "Mean Prior mu",
-    ylim = c(-3,8),main = "unpredictable high risk")
+    ylim = c(-3,3),main = "unpredictable high risk")
 #dev.off()
 
 
