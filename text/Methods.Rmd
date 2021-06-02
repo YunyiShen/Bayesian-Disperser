@@ -1,0 +1,17 @@
+---
+title: "Bayesian disperser - Methods"
+author: "Yunyi and Elie"
+date: "5/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We formulated a discrete time individual based model in which a fixed population of individuals are born, disperse, reproduce and die on a dynamic resource landscape. The landscape resource has a standard normal marginal distribution with landscape spatial and temporal correlation, i.e. the resource quality at any given location is correlated with the quality in neighboring locations or at that location in recent time, with mean overall resource quality 0 and standard deviaion 1. At each discrete time step, individuals decide whether to disperse or to settle if they are dispersing. There is some probability of dying during dispersal according to a constant mortality rate.  Once all individuals have dispersed, the population is replaced in proportion to the resource quality of the individual's new location, i.e. the population is constant and generations are non-overlapping.  This is equivalent to a Wright-Fisher process (**ref**) where fitness is proportional to the resource distribution.
+
+Before the disperser starts moving in the landscape, its information about the landscape comes from four inherited genes. These assess the *mean* of the landscape quality ($M$) and the *variability* of the landscape quality ($S$), via respective assessments of their magnitudes ($\mu_m$ and $\mu_s$) and uncertainties areound those magnitudes ($\sigma_m$ and $\sigma_s$). Thus, these genes are exactly analogous to the parameters of a Bayesian prior on an estimate of the landscape properties, and the dispersal, death, reproduction process is a kind of Markov chain Monte Carlo sampling (see Michelot et al. 2019 for a similar analogy between animal movement at MCMC).  The disperser's decision making is based on updating the prior knowledge encoded by the genes via experience, such that at every step the individual tracks an estimate $\widehat{\theta_t}$, where $\theta$ represents the complete set of parameters describing the posterior knowledge of the landscale ($\widehat{\mu_{m,t}}, \widehat{\mu_{s,t}},\widehat{\sigma_{m,t}}, \widehat{\sigma_{s,t}}$).  A fifth gene, $\alpha$, encodes the threshold for settling, such that the disperser settles if the perceived landscape is $\alpha$ estimated standard deviations greater than the estimated mean quality, i.e. 
+$$q_t \geq \widehat{\mu_{m,t}} + \alpha \, \widehat{\mu_{s,t}}$$
+Finally, the original values of the five genes are inherited with some variance by the disperser's offspring.  Thus, any long-term change in the prior assessment of the landscape occurs via natural selection. Details on the inherited variation and prior and posterior conjucacy of the Bayesian disperser are found in Appendix X. 
+
