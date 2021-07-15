@@ -7,10 +7,10 @@ sourceCpp("./src/Wright-Fisher-simu.cpp")
 set.seed(42)
 n_iter <- 2000 # number of years
 n <- 3000 # population size for WF model
-nrep <- 50
+nrep <- 5
 risks <- seq(0.005,0.05,0.005)
 pred_temp <- seq(0,0.9,0.1)
-pred_sp <- seq(0,0.5,0.1)
+pred_sp <- seq(0,0.3,0.1)
 #nrep <- 1
 #risks <- c(0.005,0.05)
 #pred_temp <- c(0,0.9)
@@ -32,7 +32,7 @@ for(r in risks){
 #         // max number of steps per year
                                  n_iter = n_iter,
                                  #      // number of years to evalute
-                                 mutation = c(2,0.1,0.1,0.1,0.1),
+                                 mutation = c(.1,0.1,0.1,0.1,0.1),
                                  #// noise level for mutation, for mu, nv, alpha, beta and thr
                                  a_env_sp = a_sp,
                                  # // noise level on landscape, env_i+1 = a env_i + (1-a) * epsilon
@@ -44,7 +44,8 @@ for(r in risks){
                                  #// cost for dispersion, as death rate each step
                                  progress = T
                                  #// progress bar?
-)
+                                  )
+                save.image("./res/lesser_big_simu.RData",safe = TRUE)
             }
             res[[i_situ]] <- list(risk=r, 
                     pred_temp = a_temp, 
@@ -56,4 +57,4 @@ for(r in risks){
 }
 
 
-save.image("./res/big_simu.RData")
+

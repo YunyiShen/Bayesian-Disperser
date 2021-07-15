@@ -85,7 +85,7 @@ inline void normal_AR1_regress(arma::mat &input,
                                double a)
 {
     a = a < 1 ? a : 1;
-    input = a * input + ((1 - a) * randn(size(input)) + trend);
+    input = sqrt(a) * input + (sqrt(1 - a) * randn(size(input)) + trend);
     return;
 }
 
