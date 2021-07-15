@@ -15,6 +15,7 @@ pred_sp <- seq(0,0.3,0.1)
 #risks <- c(0.005,0.05)
 #pred_temp <- c(0,0.9)
 #pred_sp <- c(0,0.5)
+mutation <- c(1,0.1,0.1,0.1,0.1)
 
 n_situations <- length(risks) * length(pred_temp) * length(pred_sp)
 i_situ <- 1
@@ -32,7 +33,7 @@ for(r in risks){
 #         // max number of steps per year
                                  n_iter = n_iter,
                                  #      // number of years to evalute
-                                 mutation = c(.1,0.1,0.1,0.1,0.1),
+                                 mutation = mutation,
                                  #// noise level for mutation, for mu, nv, alpha, beta and thr
                                  a_env_sp = a_sp,
                                  # // noise level on landscape, env_i+1 = a env_i + (1-a) * epsilon
@@ -45,7 +46,7 @@ for(r in risks){
                                  progress = T
                                  #// progress bar?
                                   )
-                save.image("./res/lesser_big_simu.RData",safe = TRUE)
+                save.image("./res/lesser_big_simu_mu_mutation1.RData",safe = TRUE)
             }
             res[[i_situ]] <- list(risk=r, 
                     pred_temp = a_temp, 
