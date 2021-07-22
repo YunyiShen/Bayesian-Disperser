@@ -1,0 +1,100 @@
+---
+title: "Some results figures"
+author: "Yunyi and Elie"
+date: "2021-07-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, 
+                      warning = FALSE, cache = TRUE,
+                      fig.height = 4, fig.width = 8)
+```
+
+
+
+
+```{r loaddataetc}
+library(ggplot2)
+require(plyr)
+require(magrittr)
+require(ggthemes)
+simudata <- read.csv("../Wright-Fisher/res/big_simu_processed_mu_mutation1.csv")
+simudata$mu_ratio <- simudata$mean_genotypenu/simudata$mean_moved
+
+logit <- function(x){
+  log(x/(1-x))
+}
+
+aggregate_simu <- aggregate(.~risk+pred_temp+sp_auto, data = simudata, FUN = "mean")
+
+aggregate_simu$sp_auto <- as.factor(aggregate_simu$sp_auto)
+gene_names <- c("mu0","nu","alpha","beta","thr")
+
+aggregate_simu <- aggregate_simu %>% 
+  mutate(autocorrelation = paste("autocorrelation", sp_auto),
+         predictability = factor(pred_temp))
+
+gglist <- list(geom_line(), geom_point(),
+               facet_grid(.~autocorrelation),
+               theme_few(), 
+               scale_color_viridis_d())
+
+```
+
+
+In the following three figures, the x-axis is increasing risk, the panels left to right correspond to increasing environmental autocorrelation during dispersal (smaller values = more variable), colors reflect increasing temporal predictability across generations (blue to yellow).  
+
+
+# Figure 1: Genotype
+
+
+Here, the y-axis is the stationary average genotype of the estimate of the environment, iu.e. the inherited optimism or pessimism. Higher values = more optimistic about the environment.  High risk = generally more pessimism, especially when autocorrelation is high, i.e. the predictability is high.  The most optimistic scenarios are ones where predictability is LOW and the environment is UNCORRELATED.  Optimistic dispersers keep moving (see Figure 3), because they don't settle until the environment is very good, always believeing there is something better around the corner.  In a way, optimism = pickiness.  Pessimists (in predictable, autocorrelated environments), think ... meh, what's the point. 
+
+
+```{r genotype, fig.height = 4}
+
+# Genetically encoded knowledge
+
+ggplot(aggregate_simu %>% 
+         mutate(genotype = mean_genotypemu0),
+       aes(risk, genotype, col=predictability)) + gglist + 
+       #aes(risk, pred_temp, fill=genotype)) + gglist + 
+  ggtitle("Mean genotype of environmental estimate") 
+```
+
+
+# Figure 2: Knowledge Use
+
+
+The y-axis here is the ratio between the use of learned knowledge during dispersal and genetic (inherited) knowledge in making the settlement decision.  If the number is less than 1 (horizontal dashed line), inherited knowledge is more important that what is learned about the environemnt. At lower risk, there is more movement and more is learned along the way.  Inherited knowledge is most useful under a combination of high environemntal autocorrelation (predictable during dispersal) and interannually predictable environments with higher risk leads, i.e. the most pessimistic scenarios. 
+
+
+```{r knowledge}
+
+ggplot(aggregate_simu %>% 
+         mutate(knowledge = 1/mu_ratio), 
+       aes(risk, knowledge, col=predictability)) + gglist + 
+       #aes(risk, pred_temp, fill=knowledge)) + gglist + 
+  ggtitle("Knowledge use") +
+  scale_y_continuous(trans='log10') + 
+  geom_hline(yintercept = 1, col = "grey", lty = 2) + 
+  ylab("learned / genetic knowledge used")
+
+```
+
+
+# Figure 3: Total Movement before settlement 
+
+Total number of steps before settling.  The most optimistic scenarios move most. 
+
+```{r movement, fig.height = 4}
+ggplot(aggregate_simu %>% 
+         mutate(movement = mean_moved), 
+       aes(risk, movement, col=predictability)) + 
+       # aes(risk, pred_temp, fill=movement)) + 
+  gglist + 
+  scale_y_continuous(trans='log10') + 
+  ggtitle("Total movement")
+```
+
