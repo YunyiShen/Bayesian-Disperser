@@ -1,5 +1,5 @@
 # loading simulation results:
-load("./res/lesser_big_simu.RData")
+load("./res/lesser_big_simu_mu_mutation1.RData")
 
 get_stationary_mean <- function(w){
   if(ncol(w)>1){
@@ -38,4 +38,4 @@ get_data_frame <- function(w){
 simulation_data <- lapply(res, get_data_frame)
 simulation_data <- Reduce(rbind, simulation_data)
 
-write.csv(simulation_data,"./res/big_simu_processed.csv", row.names = F)
+write.csv(simulation_data,"./res/big_simu_processed_mu_mutation1.csv", row.names = F)

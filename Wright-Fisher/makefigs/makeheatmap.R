@@ -1,4 +1,5 @@
-simudata <- read.csv("./res/big_simu_processed.csv")
+library(ggplot2)
+simudata <- read.csv("./res/big_simu_processed_mu_mutation1.csv")
 simudata$mu_ratio <- simudata$mean_genotypenu/simudata$mean_moved
 
 logit <- function(x){
@@ -20,9 +21,10 @@ gene_names <- c("mu0","nu","alpha","beta","thr")
 #rm(simudata)
 #rm(aggregate_simu)
 
-ggplot(aggregate_simu, aes(risk, pred_temp, fill=log(mu_ratio))) +
+ggplot(aggregate_simu, aes(risk, pred_temp, fill=mean_genotypemu0)) +
   geom_tile() +
   scale_fill_viridis_c() + 
-  facet_grid(.~sp_auto, scales = "free")
+  facet_grid(.~sp_auto)#, scales = "free")
 
+ggsave("info_ratio.pdf")
 
