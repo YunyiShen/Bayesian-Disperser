@@ -43,6 +43,14 @@ gglist <- list(geom_line(), geom_point(),
 ```
 
 
+
+# Simulation runs
+
+
+We ran the process 4000 time steps with 5 repeats of each parameter combination and used the last 2000 interations  (as a stationary state) and take the average across the replicates for several measures, described below. 
+
+Paramater combinations included 10 values of inter-annual predictability x 10 values of risk x 4 values of environmental autocorrelation during dispersal.  
+
 In the following three figures, the x-axis is increasing risk, the panels left to right correspond to increasing environmental autocorrelation during dispersal (smaller values = more variable), colors reflect increasing temporal predictability across generations (blue to yellow).  
 
 
